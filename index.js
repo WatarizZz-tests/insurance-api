@@ -20,8 +20,15 @@ console.log(formattedDateTime);
 
 dotenv.config();
 
+const allowedOrigins = [
+  'https://insurance-service.vercel.app/',
+  'https://insurance-service.vercel.app'
+  'http://localhost:3000',
+  'http://localhost:3001'
+];
+
 app.use(cors({
-  origin: 'https://insurance-service.vercel.app/'
+  origin: allowedOrigins
 }));
 
 
