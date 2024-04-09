@@ -23,8 +23,8 @@ dotenv.config();
 const allowedOrigins = [
   'https://insurance-service.vercel.app/',
   'https://insurance-service.vercel.app',
-  https://leet-z-assurance.vercel.app/,
-  https://leet-z-assurance.vercel.app,
+  'https://leet-z-assurance.vercel.app/',
+  'https://leet-z-assurance.vercel.app',
   'http://localhost:3000',
   'http://localhost:3001'
 ];
