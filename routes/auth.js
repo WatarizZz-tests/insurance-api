@@ -84,12 +84,18 @@ router.post('/forgot-password', (req, res) => {
         transporter.sendMail(mailOptions, function(error, info){
           if (error) {
             console.log(error);
+            return res.status(500).json({ message: "Erreur lors de l'envoi de l'email" });
           } else {
-            return res.send({Status: "Success"})
+            return res.status(200).json({ message: "Email de réinitialisation envoyé avec succès" });
           }
         });
   })
+  .catch(err => {
+    console.error(err);
+    return res.status(500).json({ message: "Une erreur s'est produite lors de la récupération de l'utilisateur" });
+  });
 })
+
 
 
 //partie speciale pour les assureurs 
