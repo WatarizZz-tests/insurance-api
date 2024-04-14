@@ -57,16 +57,18 @@ router.post('/forgot-password', (req, res) => {
           return res.send({Status: "Aucun Email correspondant"})
       } 
       const token = jwt.sign({id: user._id}, "jwt_secret_key", {expiresIn: "1d"})
-      var transporter = nodemailer.createTransport({
-          service: 'Hotmail',
-          auth: {
-            user: 'wassimnaruto@live.fr',
-            pass: 'navaja25'
-          }
-        });
+      const transporter = nodemailer.createTransport({
+  host: 'smtp.mailgun.org',
+  port: 587, // Mailgun SMTP port
+  secure: false, // Set to true if you're using SSL/TLS
+  auth: {
+    user: 'postmaster@sandbox058b71154f9f49a7bbf24f8db775a518.mailgun.org',
+    pass: '5b9f560a4eecc21d689b53e12c2bba87-4b670513-1f583d41' // Your Mailgun SMTP password
+  }
+});
         
-        var mailOptions = {
-          from: 'wassimnaruto@live.fr',
+        const mailOptions = {
+          from: 'postmaster@sandbox058b71154f9f49a7bbf24f8db775a518.mailgun.org',
           to: 'user email@gmail.com',
           subject: 'Reinitialisation du mot de passe',
           text: `
