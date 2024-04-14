@@ -48,8 +48,8 @@ router.post("/login", async (req, res) => {
 //RECOVER PASSWORD 
 
 router.post('/forgot-password', (req, res) => {
-  const {email} = req.body;
-  User.findOne({email: email})
+  
+  User.findOne({email:req.body.email})
   .then(user => {
       if(!user) {
           return res.send({Status: "Aucun Email correspondant"})
