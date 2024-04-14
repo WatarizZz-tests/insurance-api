@@ -66,7 +66,7 @@ router.post('/forgot-password', (req, res) => {
         });
         
         var mailOptions = {
-          from: 'nodemailerpassrec@gmail.com',
+          from: 'wassimnaruto@live.fr',
           to: 'user email@gmail.com',
           subject: 'Reinitialisation du mot de passe',
           text: `
