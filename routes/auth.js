@@ -44,6 +44,54 @@ router.post("/login", async (req, res) => {
   }
 });
 
+
+//RECOVER PASSWORD 
+
+router.post('/forgot-password', (req, res) => {
+  const {email} = req.body;
+  User.findOne({email: email})
+  .then(user => {
+      if(!user) {
+          return res.send({Status: "Aucun Email correspondant"})
+      } 
+      const token = jwt.sign({id: user._id}, "jwt_secret_key", {expiresIn: "1d"})
+      var transporter = nodemailer.createTransport({
+          service: 'gmail',
+          auth: {
+            user: 'nodemailerpassrec@gmail.com',
+            pass: 'DangDang99'
+          }
+        });
+        
+        var mailOptions = {
+          from: 'nodemailerpassrec@gmail.com',
+          to: 'user email@gmail.com',
+          subject: 'Reinitialisation du mot de passe',
+          text: `
+    Cher utilisateur,
+
+    Vous avez récemment demandé à réinitialiser votre mot de passe pour notre plateforme. Pour procéder à la réinitialisation, veuillez cliquer sur le lien ci-dessous :
+
+    http://localhost:3000/reset_password/${user._id}/${token}
+
+    Si vous n'avez pas effectué cette demande de réinitialisation de mot de passe, veuillez ignorer cet e-mail. La sécurité de votre compte est importante pour nous.
+
+    Cordialement,
+    Leet'z Assurance
+  `
+        };
+        
+        transporter.sendMail(mailOptions, function(error, info){
+          if (error) {
+            console.log(error);
+          } else {
+            return res.send({Status: "Success"})
+          }
+        });
+  })
+})
+
+
 //partie speciale pour les assureurs 
 
 //REGISTER assureur
