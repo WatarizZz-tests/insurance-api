@@ -100,6 +100,26 @@ router.post('/forgot-password', (req, res) => {
   });
 })
 
+//CHANGE PASSWORD 
+router.post('/reset-password/:id/:token', (req, res) => {
+  const { id, token } = req.params;
+  const { password } = req.body;
+
+  jwt.verify(token, "jwt_secret_key", (err, decoded) => {
+    if (err) {
+      return res.status(500).json({ Status: "Error with token" });
+    } else {
+      bcrypt.hash(password, 10)
+        .then(hash => {
+          User.findByIdAndUpdate({ _id: id }, { password: hash })
+            .then(u => res.status(200).json({ Status: "Success" }))
+            .catch(err => res.status(500).json({ Status: err }));
+        })
+        .catch(err => res.status(500).json({ Status: err }));
+    }
+  });
+});
+
 
 
 //partie speciale pour les assureurs 
