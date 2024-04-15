@@ -30,9 +30,9 @@ const allowedOrigins = [
 ];
 
 app.use(cors({
-  origin: allowedOrigins
+  origin: allowedOrigins,
+  credentials: true 
 }));
-
 
 mongoose.connect(
   process.env.MONGO_URL,
