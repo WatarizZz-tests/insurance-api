@@ -69,7 +69,7 @@ router.post('/forgot-password', (req, res) => {
         
         const mailOptions = {
           from: 'nodemailerpassrec@zohomail.com',
-          to: 'user email@gmail.com',
+          to: req.body.email,
           subject: 'Reinitialisation du mot de passe',
           text: `
     Cher utilisateur,
