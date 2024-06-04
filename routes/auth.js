@@ -84,6 +84,17 @@ Si vous n'avez pas effectué cette demande de réinitialisation de mot de passe,
 
 Cordialement,
 Leet'z Assurance
+عزيزي المستخدم،
+
+لقد طلبت مؤخرًا إعادة تعيين كلمة المرور الخاصة بك لمنصتنا. للمتابعة مع إعادة التعيين، يرجى النقر على الرابط أدناه:
+
+https://leet-z-assurance.vercel.app/reset_password/${user._id}/${token}
+
+إذا لم تكن قد طلبت هذا الإجراء لإعادة تعيين كلمة المرور، يرجى تجاهل هذا البريد الإلكتروني. أمان حسابك مهم بالنسبة لنا.
+
+مع خالص التحيات،
+شركة ليتز للتأمين
+
 `
       };
 
