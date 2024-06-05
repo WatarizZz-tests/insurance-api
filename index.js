@@ -40,8 +40,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 mongoose.connect(
-  'mongodb+srv://WatarizZz:Dayjobu2015@ac-zinwujj.mongodb.net/assurance?retryWrites=true&w=majority',
-  { useNewUrlParser: true, useUnifiedTopology: true }
+  'mongodb+srv://WatarizZz:Dayjobu2015@cluster0.ii4ujpd.mongodb.net/assurance?retryWrites=true&w=majority&appName=Cluster0'
 ).then(() => {
   console.log("Connected to MongoDB");
 
