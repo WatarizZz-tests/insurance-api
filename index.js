@@ -9,10 +9,9 @@ const multer = require("multer");
 const userRoute = require("./routes/users");
 const authRoute = require("./routes/auth");
 const postRoute = require("./routes/posts");
-const router = express.Router();
 const path = require("path");
-const moment = require ("moment");
-const {format} = require("date-fns");
+const moment = require("moment");
+const { format } = require("date-fns");
 
 const date = new Date();
 const formattedDateTime = format(date, 'dd_MM_yyyy_HH_mm');
@@ -23,16 +22,22 @@ dotenv.config();
 const allowedOrigins = [
   'https://insurance-service.vercel.app/',
   'https://insurance-service.vercel.app',
-  'https://leet-z-assurance.vercel.app/fr',
-  'https://leet-z-assurance.vercel.app',
   'http://localhost:3000',
   'http://localhost:3001'
 ];
 
-app.use(cors({
-  origin: allowedOrigins,
-  credentials: true 
-}));
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin) || origin.startsWith('https://leet-z-assurance.vercel.app')) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+};
+
+app.use(cors(corsOptions));
 
 mongoose.connect(
   process.env.MONGO_URL,
@@ -41,12 +46,14 @@ mongoose.connect(
     console.log("Connected to MongoDB");
   }
 );
-app.get("/",(req,res) => {
+
+app.get("/", (req, res) => {
   res.json("Hello");
-  })
+});
+
 app.use("/images", express.static(path.join(__dirname, "public/images")));
 
-//middleware
+// middleware
 app.use(express.json());
 app.use(helmet());
 app.use(morgan("common"));
@@ -64,7 +71,7 @@ const upload = multer({ storage: storage });
 
 app.post("/api/upload", upload.single("file"), (req, res) => {
   try {
-    return res.status(200).json("File uploded successfully");
+    return res.status(200).json("File uploaded successfully");
   } catch (error) {
     console.error(error);
   }
@@ -86,7 +93,6 @@ app.use("/api/posts", postRoute);
 
 const PORT = process.env.PORT || 8800;
 
-
-app.listen(PORT , () => {
-  console.log("Backend server is running! and the port is " + PORT)
-})
+app.listen(PORT, () => {
+  console.log("Backend server is running! and the port is " + PORT);
+});
