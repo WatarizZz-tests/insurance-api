@@ -41,11 +41,18 @@ app.use(cors(corsOptions));
 
 mongoose.connect(
   'mongodb+srv://WatarizZz:Dayjobu2015@ac-zinwujj.mongodb.net/assurance?retryWrites=true&w=majority',
-  { useNewUrlParser: true, useUnifiedTopology: true },
-  () => {
-    console.log("Connected to MongoDB");
-  }
-);
+  { useNewUrlParser: true, useUnifiedTopology: true }
+).then(() => {
+  console.log("Connected to MongoDB");
+
+  // Start the server only after the database connection is established
+  const PORT = process.env.PORT || 8800;
+  app.listen(PORT, () => {
+    console.log("Backend server is running! and the port is " + PORT);
+  });
+}).catch(err => {
+  console.error("Failed to connect to MongoDB", err);
+});
 
 app.get("/", (req, res) => {
   res.json("Hello");
@@ -90,9 +97,3 @@ app.post("/api/multifiles", upload.array("files"), (req, res) => {
 app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
 app.use("/api/posts", postRoute);
-
-const PORT = process.env.PORT || 8800;
-
-app.listen(PORT, () => {
-  console.log("Backend server is running! and the port is " + PORT);
-});
