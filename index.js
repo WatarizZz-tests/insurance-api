@@ -40,7 +40,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 mongoose.connect(
-  process.env.MONGO_URL,
+  'mongodb+srv://WatarizZz:Dayjobu2015@ac-zinwujj-shard-00-00.ii4ujpd.mongodb.net/assurance?retryWrites=true&w=majority',
   { useNewUrlParser: true, useUnifiedTopology: true },
   () => {
     console.log("Connected to MongoDB");
