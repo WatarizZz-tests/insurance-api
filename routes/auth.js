@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const Usera = require("../models/Usera");
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
+const checkPrimeAccount = require('../middleware/checkPrimeAccount');
 
 //REGISTER
 router.post("/register", async (req, res) => {
@@ -136,14 +137,14 @@ router.post('/reset-password/:id/:token', (req, res) => {
 
 //partie speciale pour les assureurs 
 
-//REGISTER assureur
-router.post("/registerassureur", async (req, res) => {
+// REGISTER assureur
+router.post("/registerassureur", checkPrimeAccount, async (req, res) => {
   try {
-    //generate new password
+    // generate new password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
-    //create new assureur
+    // create new assureur
     const newUsera = new Usera({
       username: req.body.username,
       email: req.body.email,
@@ -151,30 +152,27 @@ router.post("/registerassureur", async (req, res) => {
       assureur: req.body.assureur,
     });
 
-    //save assureur and respond
+    // save assureur and respond
     const usera = await newUsera.save();
     res.status(200).json(usera);
   } catch (err) {
-    res.status(500).json(err)
+    res.status(500).json(err);
   }
 });
 
-//LOGIN
+// LOGIN assureur
 router.post("/loginassureurs", async (req, res) => {
   try {
     const usera = await Usera.findOne({ email: req.body.email });
-    !usera && res.status(404).json("user not found");
+    if (!usera) return res.status(404).json("user not found");
 
-    const validPassword = await bcrypt.compare(req.body.password, usera.password)
-    !validPassword && res.status(400).json("wrong password")
+    const validPassword = await bcrypt.compare(req.body.password, usera.password);
+    if (!validPassword) return res.status(400).json("wrong password");
 
-    res.status(200).json(usera)
+    res.status(200).json(usera);
   } catch (err) {
-    res.status(500).json(err)
+    res.status(500).json(err);
   }
 });
-
-
-
 
 module.exports = router;
