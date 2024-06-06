@@ -16,6 +16,7 @@ const { format } = require("date-fns");
 const date = new Date();
 const formattedDateTime = format(date, 'dd_MM_yyyy_HH_mm');
 console.log(formattedDateTime);
+console.log("Prime Account ID:", process.env.PRIME_ACCOUNT_ID);
 
 dotenv.config();
 
