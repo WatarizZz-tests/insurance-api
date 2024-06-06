@@ -4,7 +4,7 @@ const ObjectId = mongoose.Types.ObjectId;
 const primeAccountId = process.env.PRIME_ACCOUNT_ID; 
 
 const checkPrimeAccount = (req, res, next) => {
-  const userId = req.body.userId; // Assuming you pass userId in the request body
+  const userId = req.headers.userid; // Fetch userId from headers
 
   if (userId && userId.toString() === primeAccountId) {
     next();
