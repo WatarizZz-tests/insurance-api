@@ -140,19 +140,14 @@ router.post('/reset-password/:id/:token', (req, res) => {
 // REGISTER assureur
 router.post("/registerassureur", checkPrimeAccount, async (req, res) => {
   try {
-    // generate new password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
-
-    // create new assureur
     const newUsera = new Usera({
       username: req.body.username,
       email: req.body.email,
       password: hashedPassword,
       assureur: req.body.assureur,
     });
-
-    // save assureur and respond
     const usera = await newUsera.save();
     res.status(200).json(usera);
   } catch (err) {
@@ -165,11 +160,53 @@ router.post("/loginassureurs", async (req, res) => {
   try {
     const usera = await Usera.findOne({ email: req.body.email });
     if (!usera) return res.status(404).json("user not found");
-
     const validPassword = await bcrypt.compare(req.body.password, usera.password);
     if (!validPassword) return res.status(400).json("wrong password");
-
     res.status(200).json(usera);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// GET all users
+router.get("/users", checkPrimeAccount, async (req, res) => {
+  try {
+    const users = await Usera.find();
+    res.status(200).json(users);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// DELETE user
+router.delete("/users/:id", checkPrimeAccount, async (req, res) => {
+  try {
+    await Usera.findByIdAndDelete(req.params.id);
+    res.status(200).json("User deleted");
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// UPDATE user password
+router.put("/users/:id/password", checkPrimeAccount, async (req, res) => {
+  try {
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+    await Usera.findByIdAndUpdate(req.params.id, { password: hashedPassword });
+    res.status(200).json("Password updated");
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// UPDATE prime user password
+router.put("/prime/password", checkPrimeAccount, async (req, res) => {
+  try {
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+    await Usera.findByIdAndUpdate(req.user._id, { password: hashedPassword });
+    res.status(200).json("Prime password updated");
   } catch (err) {
     res.status(500).json(err);
   }
