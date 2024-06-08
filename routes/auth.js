@@ -171,7 +171,7 @@ router.post("/loginassureurs", async (req, res) => {
 // GET all users
 router.get("/users", checkPrimeAccount, async (req, res) => {
   try {
-    const users = await Usera.find();
+    const users = await Usera.find({ _id: { $ne: primeAccountId } });
     res.status(200).json(users);
   } catch (err) {
     res.status(500).json(err);
