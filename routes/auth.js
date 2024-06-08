@@ -221,7 +221,8 @@ router.put("/prime/password", checkPrimeAccount, async (req, res) => {
     await Usera.findByIdAndUpdate(req.user._id, { password: hashedPassword });
     res.status(200).json("Prime password updated");
   } catch (err) {
-    res.status(500).json(err);
+    console.error("Error updating prime password:", err);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
