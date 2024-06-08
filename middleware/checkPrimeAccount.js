@@ -8,6 +8,7 @@ const checkPrimeAccount = (req, res, next) => {
   console.log(`userId: ${userId}, primeAccountId: ${primeAccountId}`);
 
   if (userId && userId.toString() === primeAccountId) {
+    req.user = { _id: userId };  // Set req.user with the userId
     next();
   } else {
     res.status(403).json({ message: 'Access denied. Only the prime account can create new accounts.' });
