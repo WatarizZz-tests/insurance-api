@@ -5,6 +5,7 @@ const Usera = require("../models/Usera");
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const checkPrimeAccount = require('../middleware/checkPrimeAccount');
+const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
 
 
