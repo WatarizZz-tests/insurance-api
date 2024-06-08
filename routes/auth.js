@@ -5,6 +5,17 @@ const Usera = require("../models/Usera");
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const checkPrimeAccount = require('../middleware/checkPrimeAccount');
+const ObjectId = mongoose.Types.ObjectId;
+
+
+const primeAccountId = process.env.PRIME_ACCOUNT_ID;
+
+let primeAccountObjectId;
+try {
+  primeAccountObjectId = new ObjectId(primeAccountId);
+} catch (err) {
+  console.error("Invalid PRIME_ACCOUNT_ID format:", err);
+}
 
 //REGISTER
 router.post("/register", async (req, res) => {
@@ -171,10 +182,11 @@ router.post("/loginassureurs", async (req, res) => {
 // GET all users
 router.get("/users", checkPrimeAccount, async (req, res) => {
   try {
-    const users = await Usera.find({ _id: { $ne: primeAccountId } });
+    const users = await Usera.find({ _id: { $ne: primeAccountObjectId } });
     res.status(200).json(users);
   } catch (err) {
-    res.status(500).json(err);
+    console.error("Error fetching users:", err); // Log the error for debugging
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
