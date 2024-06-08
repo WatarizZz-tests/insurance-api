@@ -5,6 +5,7 @@ const primeAccountId = process.env.PRIME_ACCOUNT_ID;
 
 const checkPrimeAccount = (req, res, next) => {
   const userId = req.headers.userid; // Fetch userId from headers
+  console.log(`userId: ${userId}, primeAccountId: ${primeAccountId}`);
 
   if (userId && userId.toString() === primeAccountId) {
     next();
