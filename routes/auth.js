@@ -21,32 +21,33 @@ try {
 //REGISTER
 router.post("/register", async (req, res) => {
   try {
-    //generate new password
+    // Generate new password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
-    //create new user
+    // Create new user
     const newUser = new User({
       username: req.body.username,
       email: req.body.email,
       password: hashedPassword,
     });
 
-    //save user and respond
+    // Save user and respond
     const user = await newUser.save();
     res.status(200).json(user);
   } catch (err) {
     if (err.code === 11000) { // Duplicate key error
       if (err.keyPattern.email) {
-        res.status(400).json({ message: "Email already registered" });
+        res.status(400).json({ errorCode: "email_already_registered" });
       } else if (err.keyPattern.username) {
-        res.status(400).json({ message: "Username already taken" });
+        res.status(400).json({ errorCode: "username_already_taken" });
       }
     } else {
-      res.status(500).json({ message: "An error occurred. Please try again." });
+      res.status(500).json({ errorCode: "generic_error" });
     }
   }
 });
+
 
 
 
