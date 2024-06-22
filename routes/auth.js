@@ -21,30 +21,33 @@ try {
 //REGISTER
 router.post("/register", async (req, res) => {
   try {
-    // Generate new password
+    //generate new password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
-    // Create new user
+    //create new user
     const newUser = new User({
       username: req.body.username,
       email: req.body.email,
       password: hashedPassword,
     });
 
-    // Save user and respond
+    //save user and respond
     const user = await newUser.save();
     res.status(200).json(user);
   } catch (err) {
-    // Check for specific errors and send a user-friendly message
-    if (err.name === 'MongoError' && err.code === 11000) {
-      // Duplicate key error (e.g., email already exists)
-      res.status(400).json({ message: 'Cet email est déjà utilisé.' });
+    if (err.code === 11000) { // Duplicate key error
+      if (err.keyPattern.email) {
+        res.status(400).json({ message: "Email already registered" });
+      } else if (err.keyPattern.username) {
+        res.status(400).json({ message: "Username already taken" });
+      }
     } else {
-      res.status(500).json({ message: 'Une erreur s\'est produite. Veuillez réessayer.' });
+      res.status(500).json({ message: "An error occurred. Please try again." });
     }
   }
 });
+
 
 
 //LOGIN
