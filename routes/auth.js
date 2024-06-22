@@ -71,32 +71,33 @@ router.post("/login", async (req, res) => {
 });
 
 
-//RECOVER PASSWORD 
-router.post('/forgot-password', (req, res) => {
-  User.findOne({ email: req.body.email })
-    .then(user => {
-      if (!user) {
-        // User does not exist, return 404 status with an error message
-        return res.status(404).json({ message: "Aucun Email correspondant" });
+//RECOVER PASSWORD
+router.post('/forgot-password', async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+
+    if (!user) {
+      // User does not exist, return 404 status with an error message
+      return res.status(404).json({ message: "Aucun Email correspondant" });
+    }
+
+    // User exists, proceed with generating the token and sending the email
+    const token = jwt.sign({ id: user._id }, "jwt_secret_key", { expiresIn: "1d" });
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.zoho.com',
+      port: 465,
+      secure: true, // ssl
+      auth: {
+        user: "nodemailerpassrec@zohomail.com",
+        pass: "DangDang99"
       }
+    });
 
-      // User exists, proceed with generating the token and sending the email
-      const token = jwt.sign({ id: user._id }, "jwt_secret_key", { expiresIn: "1d" });
-      const transporter = nodemailer.createTransport({
-        host: 'smtp.zoho.com',
-        port: 465,
-        secure: true, // ssl
-        auth: {
-          user: "nodemailerpassrec@zohomail.com",
-          pass: "DangDang99"
-        }
-      });
-
-      var mailOptions = {
-        from: 'nodemailerpassrec@zohomail.com',
-        to: req.body.email,
-        subject: 'Reinitialisation du mot de passe',
-        text: `
+    var mailOptions = {
+      from: 'nodemailerpassrec@zohomail.com',
+      to: req.body.email,
+      subject: 'Reinitialisation du mot de passe',
+      text: `
 Cher utilisateur,
 
 Vous avez récemment demandé à réinitialiser votre mot de passe pour notre plateforme. Pour procéder à la réinitialisation, veuillez cliquer sur le lien ci-dessous:
@@ -119,23 +120,21 @@ https://leet-z-assurance.vercel.app/reset_password/${user._id}/${token}
 شركة ليتز للتأمين
 
 `
-      };
+    };
 
-      transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-          console.log(error);
-          return res.status(500).json({ message: "Erreur lors de l'envoi de l'email" });
-        } else {
-          return res.status(200).json({ message: "Email de réinitialisation envoyé avec succès" });
-        }
-      });
-    })
-    .catch(err => {
-      console.error(err);
-      return res.status(500).json({ message: "Une erreur s'est produite lors de la récupération de l'utilisateur" });
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log('Error while sending email:', error);
+        return res.status(500).json({ message: "Erreur lors de l'envoi de l'email" });
+      } else {
+        return res.status(200).json({ message: "Email de réinitialisation envoyé avec succès" });
+      }
     });
+  } catch (err) {
+    console.error('Error during password recovery:', err);
+    return res.status(500).json({ message: "Une erreur s'est produite lors de la récupération de l'utilisateur" });
+  }
 });
-
 //CHANGE PASSWORD 
 router.post('/reset-password/:id/:token', (req, res) => {
   const { id, token } = req.params;
