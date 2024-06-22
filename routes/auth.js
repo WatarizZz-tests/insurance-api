@@ -119,7 +119,7 @@ https://leet-z-assurance.vercel.app/${lang}/reset_password/${user._id}/${token}
 إذا لم تكن قد طلبت هذا الإجراء لإعادة تعيين كلمة المرور، يرجى تجاهل هذا البريد الإلكتروني. أمان حسابك مهم بالنسبة لنا.
 
 مع خالص التحيات،
-شركة ليتز للتأمين
+شركة  للتأمين
       ` : `
 Cher utilisateur,
 
@@ -130,7 +130,7 @@ https://leet-z-assurance.vercel.app/${lang}/reset_password/${user._id}/${token}
 Si vous n'avez pas effectué cette demande de réinitialisation de mot de passe, veuillez ignorer cet e-mail. La sécurité de votre compte est importante pour nous.
 
 Cordialement,
-Leet'z Assurance
+Don't Worry
       `
     };
 
