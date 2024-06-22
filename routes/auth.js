@@ -71,18 +71,28 @@ router.post("/login", async (req, res) => {
 });
 
 
-//RECOVER PASSWORD
+// RECOVER PASSWORD
 router.post('/forgot-password', async (req, res) => {
   try {
-    const user = await User.findOne({ email: req.body.email });
+    console.log('Received password recovery request for email:', req.body.email);
 
+    const user = await User.findOne({ email: req.body.email });
     if (!user) {
-      // User does not exist, return 404 status with an error message
+      console.log('User not found for email:', req.body.email);
       return res.status(404).json({ message: "Aucun Email correspondant" });
     }
 
-    // User exists, proceed with generating the token and sending the email
+    console.log('User found:', user);
+
+    // Generate token
     const token = jwt.sign({ id: user._id }, "jwt_secret_key", { expiresIn: "1d" });
+    console.log('Generated JWT token:', token);
+
+    // Retrieve language from query parameters
+    const lang = req.query.lang || 'fr'; // Default to 'fr' if not provided
+    console.log('Language:', lang);
+
+    // Create nodemailer transporter
     const transporter = nodemailer.createTransport({
       host: 'smtp.zoho.com',
       port: 465,
@@ -93,21 +103,13 @@ router.post('/forgot-password', async (req, res) => {
       }
     });
 
-    var mailOptions = {
+    console.log('Nodemailer transporter created.');
+
+    const mailOptions = {
       from: 'nodemailerpassrec@zohomail.com',
       to: req.body.email,
-      subject: 'Reinitialisation du mot de passe',
-      text: `
-Cher utilisateur,
-
-Vous avez récemment demandé à réinitialiser votre mot de passe pour notre plateforme. Pour procéder à la réinitialisation, veuillez cliquer sur le lien ci-dessous:
-
-https://leet-z-assurance.vercel.app/${lang}/reset_password/${user._id}/${token}
-
-Si vous n'avez pas effectué cette demande de réinitialisation de mot de passe, veuillez ignorer cet e-mail. La sécurité de votre compte est importante pour nous.
-
-Cordialement,
-Leet'z Assurance
+      subject: lang === 'ar' ? 'إعادة تعيين كلمة المرور' : 'Reinitialisation du mot de passe',
+      text: lang === 'ar' ? `
 عزيزي المستخدم،
 
 لقد طلبت مؤخرًا إعادة تعيين كلمة المرور الخاصة بك لمنصتنا. للمتابعة مع إعادة التعيين، يرجى النقر على الرابط أدناه:
@@ -118,15 +120,29 @@ https://leet-z-assurance.vercel.app/reset_password/${user._id}/${token}
 
 مع خالص التحيات،
 شركة ليتز للتأمين
+      ` : `
+Cher utilisateur,
 
-`
+Vous avez récemment demandé à réinitialiser votre mot de passe pour notre plateforme. Pour procéder à la réinitialisation, veuillez cliquer sur le lien ci-dessous:
+
+https://leet-z-assurance.vercel.app/reset_password/${user._id}/${token}
+
+Si vous n'avez pas effectué cette demande de réinitialisation de mot de passe, veuillez ignorer cet e-mail. La sécurité de votre compte est importante pour nous.
+
+Cordialement,
+Leet'z Assurance
+      `
     };
 
-    transporter.sendMail(mailOptions, function (error, info) {
+    console.log('Mail options set:', mailOptions);
+
+    // Send email
+    transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
-        console.log('Error while sending email:', error);
+        console.error('Error while sending email:', error);
         return res.status(500).json({ message: "Erreur lors de l'envoi de l'email" });
       } else {
+        console.log('Email sent:', info.response);
         return res.status(200).json({ message: "Email de réinitialisation envoyé avec succès" });
       }
     });
