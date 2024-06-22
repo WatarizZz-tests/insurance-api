@@ -114,7 +114,7 @@ router.post('/forgot-password', async (req, res) => {
 
 لقد طلبت مؤخرًا إعادة تعيين كلمة المرور الخاصة بك لمنصتنا. للمتابعة مع إعادة التعيين، يرجى النقر على الرابط أدناه:
 
-https://leet-z-assurance.vercel.app/reset_password/${user._id}/${token}
+https://leet-z-assurance.vercel.app/${lang}/reset_password/${user._id}/${token}
 
 إذا لم تكن قد طلبت هذا الإجراء لإعادة تعيين كلمة المرور، يرجى تجاهل هذا البريد الإلكتروني. أمان حسابك مهم بالنسبة لنا.
 
@@ -125,7 +125,7 @@ Cher utilisateur,
 
 Vous avez récemment demandé à réinitialiser votre mot de passe pour notre plateforme. Pour procéder à la réinitialisation, veuillez cliquer sur le lien ci-dessous:
 
-https://leet-z-assurance.vercel.app/reset_password/${user._id}/${token}
+https://leet-z-assurance.vercel.app/${lang}/reset_password/${user._id}/${token}
 
 Si vous n'avez pas effectué cette demande de réinitialisation de mot de passe, veuillez ignorer cet e-mail. La sécurité de votre compte est importante pour nous.
 
