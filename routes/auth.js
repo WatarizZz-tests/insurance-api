@@ -72,13 +72,12 @@ router.post("/login", async (req, res) => {
 
 
 //RECOVER PASSWORD 
-
 router.post('/forgot-password', (req, res) => {
   User.findOne({ email: req.body.email })
     .then(user => {
       if (!user) {
-        // User does not exist, return 500 status with an error message
-        return res.status(500).json({ message: "Aucun Email correspondant" });
+        // User does not exist, return 404 status with an error message
+        return res.status(404).json({ message: "Aucun Email correspondant" });
       }
 
       // User exists, proceed with generating the token and sending the email
@@ -86,7 +85,7 @@ router.post('/forgot-password', (req, res) => {
       const transporter = nodemailer.createTransport({
         host: 'smtp.zoho.com',
         port: 465,
-        secure: true, //ssl
+        secure: true, // ssl
         auth: {
           user: "nodemailerpassrec@zohomail.com",
           pass: "DangDang99"
@@ -97,7 +96,7 @@ router.post('/forgot-password', (req, res) => {
         from: 'nodemailerpassrec@zohomail.com',
         to: req.body.email,
         subject: 'Reinitialisation du mot de passe',
-         text: `
+        text: `
 Cher utilisateur,
 
 Vous avez récemment demandé à réinitialiser votre mot de passe pour notre plateforme. Pour procéder à la réinitialisation, veuillez cliquer sur le lien ci-dessous:
@@ -136,6 +135,7 @@ https://leet-z-assurance.vercel.app/reset_password/${user._id}/${token}
       return res.status(500).json({ message: "Une erreur s'est produite lors de la récupération de l'utilisateur" });
     });
 });
+
 //CHANGE PASSWORD 
 router.post('/reset-password/:id/:token', (req, res) => {
   const { id, token } = req.params;
